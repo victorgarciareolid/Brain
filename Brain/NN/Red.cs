@@ -57,9 +57,7 @@ namespace Brain.NN
             double[] salida = new double[n_output];
             Tuple<double[], double[]> aux;
             double[] hidden = new double[n_interior];
-            double total_error;
-            double updated_weight;
-
+            double total_error=0, updated_weight;
 
             while (!ts.finish())
             {
@@ -71,7 +69,7 @@ namespace Brain.NN
 
                 total_error = error(tp, salida);
 
-                Console.WriteLine("Current Network Error: {0}", total_error);
+                //Console.WriteLine("Current Network Error: {0}", total_error);
 
                 // Train output
                 for (int i = 0; i<n_output; i++)
@@ -83,20 +81,28 @@ namespace Brain.NN
                         output[i].updateWeight(j, updated_weight);
                     }
                 }
-
+                aux_partial = new double[n_interior, n_input];
                 // Train hidden
                 for (int i = 0; i < n_interior; i++)
                 {
                     for (int j = 0; j < n_input; j++)
                     {
-                        aux_partial[i, j] = -(tp.getOutputs()[i] - salida[i]) * derivada(salida[i]) * hidden[j];
+                        double deltasum=0;
 
-                        updated_weight = interior[i].getWeights()[j] - learning_rate * aux_partial[i, j];
+                        for (int k=0; k<n_output; k++)
+                        {
+                            deltasum += output[k].getWeights()[i]* (-(tp.getOutputs()[k] - salida[k]) * derivada(salida[k]));
+                        }
+
+                        aux_partial[i, j] = deltasum * derivada(hidden[i]) * input[j];
+
+                        updated_weight = interior[i].getWeights()[j] - learning_rate * aux_partial[i , j];
 
                         interior[i].updateWeight(j, updated_weight);
                     }
                 }
             }
+            Console.WriteLine("Net Error: " + total_error);
         }
 
         private double derivada(double u)
