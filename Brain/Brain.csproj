@@ -42,6 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NN\Perceptron.cs" />
+    <Compile Include="NN\Red.cs" />
+    <Compile Include="NN\TrainPair.cs" />
+    <Compile Include="NN\TrainSet.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
